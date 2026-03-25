@@ -1,0 +1,207 @@
+{
+    "info": {
+        "name": "Alumni Platform API",
+        "description": "Complete API collection for Alumni Platform",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:5000/api",
+            "type": "string"
+        },
+        {
+            "key": "token",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"New\",\n  \"lastName\": \"User\",\n  \"mobile\": \"9876543216\",\n  \"role\": \"alumni\",\n  \"department\": \"Computer Science\",\n  \"batch\": \"2020-2024\",\n  \"graduationYear\": 2024,\n  \"degree\": \"B.Tech\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "register"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"john.doe@gmail.com\",\n  \"password\": \"password123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/auth/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "login"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Current User",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/auth/me",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "auth",
+                                "me"
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get All Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Search Users",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/users?search=John&department=Computer Science",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "users"
+                            ],
+                            "query": [
+                                {
+                                    "key": "search",
+                                    "value": "John"
+                                },
+                                {
+                                    "key": "department",
+                                    "value": "Computer Science"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Jobs",
+            "item": [
+                {
+                    "name": "Get All Jobs",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{base_url}}/jobs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "jobs"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Create Job",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{token}}"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Full Stack Developer\",\n  \"company\": \"Tech Corp\",\n  \"description\": \"Looking for experienced full stack developer\",\n  \"type\": \"full-time\",\n  \"category\": \"software\",\n  \"location\": \"Bangalore, Karnataka\",\n  \"isRemote\": true,\n  \"skills\": [\"JavaScript\", \"React\", \"Node.js\"],\n  \"applicationDeadline\": \"2026-03-30\",\n  \"applicationEmail\": \"hr@techcorp.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{base_url}}/jobs",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "jobs"
+                            ]
+                        }
+                    }
+                }
+            ]
+        }
+    ]
+}

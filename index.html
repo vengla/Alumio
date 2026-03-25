@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alumni Platform - Central Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 50px;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5rem;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 50px;
+            font-size: 1.1rem;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .app-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            padding: 30px;
+            color: white;
+            text-decoration: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .app-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .app-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+            transition: transform 0.5s;
+        }
+
+        .app-card:hover::before {
+            transform: translate(-25%, -25%);
+        }
+
+        .app-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .app-card h2 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+
+        .app-card p {
+            opacity: 0.9;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .app-status {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .status-running {
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .status-check {
+            background: rgba(255, 152, 0, 0.3);
+        }
+
+        .quick-start {
+            background: #f5f5f5;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .quick-start h3 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .command-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .command-box code {
+            display: block;
+            white-space: pre-wrap;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.green {
+            background: #4caf50;
+        }
+
+        .status-indicator.orange {
+            background: #ff9800;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .docs-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .doc-link {
+            background: white;
+            color: #667eea;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            border: 2px solid #667eea;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .doc-link:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .apps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🎓 Alumni Platform</h1>
+        <p class="subtitle">Complete Web + Mobile + Backend Solution</p>
+
+        <div class="apps-grid">
+            <!-- Web Application -->
+            <a href="http://localhost:3000" class="app-card" target="_blank">
+                <div class="app-icon">🌐</div>
+                <h2>Web Application</h2>
+                <p>Full-featured Next.js web application with all features including authentication, directory, jobs,
+                    events, and admin dashboard.</p>
+                <div class="app-status status-check">
+                    <span class="status-indicator orange"></span>
+                    Port: 3000 - Click to Open
+                </div>
+            </a>
+
+            <!-- Mobile Application -->
+            <a href="mobile/index.html" class="app-card" target="_blank">
+                <div class="app-icon">📱</div>
+                <h2>Mobile Application</h2>
+                <p>Android-first mobile demo with responsive design, offline support, and all core features optimized
+                    for mobile devices.</p>
+                <div class="app-status status-running">
+                    <span class="status-indicator green"></span>
+                    Ready - Click to Open
+                </div>
+            </a>
+
+            <!-- Backend API -->
+            <a href="http://localhost:5000" class="app-card" target="_blank">
+                <div class="app-icon">🔌</div>
+                <h2>Backend API</h2>
+                <p>Node.js + Express RESTful API with MongoDB, JWT authentication, and complete CRUD operations for all
+                    features.</p>
+                <div class="app-status status-check">
+                    <span class="status-indicator orange"></span>
+                    Port: 5000 - API Documentation
+                </div>
+            </a>
+        </div>
+
+        <div class="quick-start">
+            <h3>🚀 Quick Start Instructions</h3>
+
+            <p style="margin-bottom: 15px;"><strong>1. Start Backend Server (Terminal 1):</strong></p>
+            <div class="command-box">
+                <code>cd backend
+npm run seed    # First time only
+npm run dev     # Starts on http://localhost:5000</code>
+            </div>
+
+            <p style="margin: 20px 0 15px;"><strong>2. Start Web Application (Terminal 2):</strong></p>
+            <div class="command-box">
+                <code>cd web
+npm run dev     # Starts on http://localhost:3000</code>
+            </div>
+
+            <p style="margin: 20px 0 15px;"><strong>3. Access Applications:</strong></p>
+            <div class="command-box">
+                <code>Web:    http://localhost:3000
+Mobile: Click "Mobile Application" card above
+API:    http://localhost:5000</code>
+            </div>
+
+            <p style="margin: 20px 0 15px;"><strong>Test Login Credentials:</strong></p>
+            <div class="command-box">
+                <code>Admin:   admin@alumni.edu / admin123
+Alumni:  john.doe@gmail.com / password123
+Student: student1@college.edu / password123</code>
+            </div>
+        </div>
+
+        <div class="docs-links">
+            <a href="README.md" class="doc-link" target="_blank">📄 Main README</a>
+            <a href="backend/README.md" class="doc-link" target="_blank">🔌 Backend Guide</a>
+            <a href="backend/QUICKSTART.md" class="doc-link" target="_blank">⚡ Quick Start</a>
+            <a href="INTEGRATION_GUIDE.md" class="doc-link" target="_blank">🔗 Integration</a>
+            <a href="ARCHITECTURE.md" class="doc-link" target="_blank">🏗️ Architecture</a>
+            <a href="BACKEND_COMPLETE.md" class="doc-link" target="_blank">✅ Setup Guide</a>
+        </div>
+    </div>
+
+    <script>
+        // Check if servers are running
+        async function checkServer(url, element) {
+            try {
+                const response = await fetch(url, { mode: 'no-cors' });
+                if (element) {
+                    element.classList.remove('status-check');
+                    element.classList.add('status-running');
+                    element.querySelector('.status-indicator').classList.remove('orange');
+                    element.querySelector('.status-indicator').classList.add('green');
+                }
+            } catch (error) {
+                // Server not running
+            }
+        }
+
+        // Check backend
+        window.addEventListener('load', () => {
+            const backendCard = document.querySelector('[href="http://localhost:5000"]');
+            const webCard = document.querySelector('[href="http://localhost:3000"]');
+
+            if (backendCard) {
+                checkServer('http://localhost:5000/health',
+                    backendCard.querySelector('.app-status'));
+            }
+
+            if (webCard) {
+                checkServer('http://localhost:3000',
+                    webCard.querySelector('.app-status'));
+            }
+        });
+    </script>
+</body>
+
+</html>

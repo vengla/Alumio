@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alumni Connect - Mobile App Demo</title>
+  <link rel="stylesheet" href="mobile-styles.css">
+  <!-- Razorpay Sandbox SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+
+<body>
+  <!-- Mobile Bezel Frame -->
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen" id="screen">
+
+      <!-- Splash Screen -->
+      <div class="screen-view" id="splash" style="display: flex;">
+        <div class="splash-content">
+          <div class="app-icon">✨</div>
+          <h1>ALUMIO</h1>
+          <p>The Future of Connection</p>
+          <div class="loader"></div>
+        </div>
+      </div>
+
+      <!-- Login Screen -->
+      <div class="screen-view" id="login" style="display: none;">
+        <div class="mobile-header">
+          <h2>Welcome Back</h2>
+          <p>Login to your account</p>
+        </div>
+        <div class="mobile-content">
+          <div class="input-group">
+            <label>Email ID</label>
+            <input type="email" placeholder="admin@alumni.edu" id="email-input">
+          </div>
+          <div class="input-group">
+            <label>Secure Password</label>
+            <input type="password" placeholder="••••••••" id="password-input">
+          </div>
+          <div class="role-selector">
+            <button class="role-btn active" data-role="alumni">ALUMNI</button>
+            <button class="role-btn" data-role="student">STUDENT</button>
+            <button class="role-btn" data-role="admin">ADMIN</button>
+          </div>
+          <button class="btn-primary" onclick="loginUser()">Sign In ➔</button>
+          <p class="text-center text-muted" style="margin-top: 1.5rem; font-size: 0.85rem;">
+            New to Alumio? <a href="#" style="color: var(--neon-cyan); font-weight: 700;"
+              onclick="showScreen('register'); return false;">Register Now</a>
+          </p>
+
+          <div
+            style="background: rgba(139, 92, 246, 0.08); backdrop-filter: blur(10px); padding: 1.25rem; border-radius: 20px; margin-top: 2rem; border: 1px solid rgba(139, 92, 246, 0.2); position: relative;">
+            <div
+              style="position: absolute; top: -10px; right: 20px; background: var(--violet); padding: 2px 10px; border-radius: 99px; font-size: 0.6rem; font-weight: 800; color: #fff;">
+              QUICK ACCESS</div>
+            <p style="font-size: 0.8rem; font-weight: 700; color: var(--lavender); margin-bottom: 0.75rem;">
+              ⚡ Demo Auth Flow</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <button onclick="demoLogin('alumni', 'alumni@demo.com')"
+                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; width: 100%; color: #fff;">
+                <span><strong>🎓 Alumni Access</strong></span>
+                <span style="font-size: 0.75rem; color: var(--neon-cyan);">➔</span>
+              </button>
+              <button onclick="demoLogin('student', 'student@demo.com')"
+                style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 14px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; width: 100%; color: #fff;">
+                <span><strong>📚 Student Access</strong></span>
+                <span style="font-size: 0.75rem; color: var(--neon-cyan);">➔</span>
+              </button>
+            </div>
+            <p
+              style="font-size: 0.65rem; color: var(--text-muted); margin-top: 0.75rem; font-style: italic; line-height: 1.2;">
+              Admin Creds: admin@alumni.edu / admin123
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registration Screen -->
+      <div class="screen-view" id="register" style="display: none;">
+        <div class="mobile-header">
+          <button class="back-btn" onclick="showScreen('login')">←</button>
+          <h2>Create Account</h2>
+          <p>Join the decentralized network</p>
+        </div>
+        <div class="mobile-content">
+          <div class="role-selector">
+            <button class="role-btn active" id="reg-role-alumni" onclick="selectRegRole('alumni')">ALUMNI</button>
+            <button class="role-btn" id="reg-role-student" onclick="selectRegRole('student')">STUDENT</button>
+          </div>
+
+          <div class="input-group">
+            <label>Display Name</label>
+            <input type="text" placeholder="John Doe" id="reg-name">
+          </div>
+          <div class="input-group">
+            <label>Verify Email</label>
+            <input type="email" placeholder="name@alumni.edu" id="reg-email">
+          </div>
+          <div class="input-group" style="display: flex; gap: 10px;">
+            <div style="flex: 1;">
+              <label>Grad Year</label>
+              <input type="number" placeholder="2024" id="reg-year">
+            </div>
+            <div style="flex: 1;">
+              <label>Branch</label>
+              <input type="text" placeholder="CSE" id="reg-dept">
+            </div>
+          </div>
+          <div class="input-group">
+            <label>Secure PIN</label>
+            <input type="password" placeholder="Create password" id="reg-password">
+          </div>
+
+          <div class="info-banner" style="margin-bottom: 2rem;">
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="font-size: 1.2rem;">🛡️</span>
+              <span style="font-size: 0.8rem; color: var(--silver);">Safety Notice: All accounts undergo biometric &
+                manual verification for campus exclusivity.</span>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="submitRegistration()">Initialize Account</button>
+        </div>
+      </div>
+
+
+      <!-- Dashboard Screen -->
+      <div class="screen-view" id="dashboard" style="display: none;">
+        <div class="mobile-header">
+          <div class="flex-between">
+            <div>
+              <p style="font-size: 0.75rem; color: var(--neon-cyan); font-weight: 700; letter-spacing: 1px;">CONNECTED
+                // SESSION ACTIVE</p>
+              <h2 style="margin: 0; color: #fff;" id="user-name">John Alumnus</h2>
+            </div>
+            <button class="icon-btn pulse" onclick="showScreen('notifications')">🔔</button>
+          </div>
+        </div>
+
+        <div class="mobile-content">
+          <!-- Stats Cards -->
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-icon">💠</div>
+              <div class="stat-value">145</div>
+              <div class="stat-label">Network</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">⚡</div>
+              <div class="stat-value">2</div>
+              <div class="stat-label">Referrals</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">🎓</div>
+              <div class="stat-value">3</div>
+              <div class="stat-label">Mentees</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon">💎</div>
+              <div class="stat-value">₹25K</div>
+              <div class="stat-label">Impact</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="section-header">
+            <h3><span style="color: var(--neon-cyan);">◩</span> CORE MODULES</h3>
+          </div>
+          <div class="action-grid">
+            <button class="action-card" onclick="showScreen('directory')">
+              <div class="action-icon">📂</div>
+              <div class="action-label">Registry</div>
+            </button>
+            <button class="action-card" onclick="showScreen('jobs')">
+              <div class="action-icon">🚀</div>
+              <div class="action-label">Portals</div>
+            </button>
+            <button class="action-card" onclick="showScreen('mentorship')">
+              <div class="action-icon">🧠</div>
+              <div class="action-label">Mentors</div>
+            </button>
+            <button class="action-card" onclick="showScreen('events')">
+              <div class="action-icon">📡</div>
+              <div class="action-label">Streams</div>
+            </button>
+          </div>
+
+          <!-- AI Quote Banner -->
+          <div class="info-banner"
+            style="position: relative; overflow: hidden; border-left: 3px solid var(--neon-cyan);">
+            <div
+              style="position: absolute; top: 0; right: 0; padding: 4px 8px; font-size: 0.6rem; background: var(--neon-cyan); color: #000; font-weight: 900;">
+              AI INSIGHT</div>
+            <div id="api-quote"
+              style="font-size: 0.9rem; font-weight: 500; color: #fff; line-height: 1.4; margin-top: 5px;">
+              "The best way to predict the future is to create it."</div>
+            <div id="api-author"
+              style="font-size: 0.7rem; color: var(--neon-cyan); margin-top: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+              — ALUMIO INTELLIGENCE</div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="section-header">
+            <h3><span style="color: var(--violet-glow);">⚡</span> FEED // LIVE</h3>
+          </div>
+          <div class="activity-list">
+            <div class="activity-item">
+              <div class="activity-icon">📡</div>
+              <div class="activity-content">
+                <div class="activity-text">New uplink request established</div>
+                <div class="activity-time">2.4h Cycles ago</div>
+              </div>
+            </div>
+            <div class="activity-item">
+              <div class="activity-icon">💎</div>
+              <div class="activity-content">
+                <div class="activity-text">Contribution processed successfully</div>
+                <div class="activity-time">5.1h Cycles ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+          <button class="nav-btn active" onclick="showScreen('dashboard')"><span class="nav-icon">⬢</span><span
+              class="nav-label">Nexus</span></button>
+          <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">◓</span><span
+              class="nav-label">Directory</span></button>
+          <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">⬗</span><span
+              class="nav-label">Portal</span></button>
+          <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙</span><span
+              class="nav-label">System</span></button>
+        </div>
+      </div>
+
+      <!-- Directory Screen -->
+      <div class="screen-view" id="directory" style="display: none;">
+        <div class="mobile-header">
+          <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+          <h2>Global Registry</h2>
+        </div>
+        <div class="mobile-content">
+          <div class="search-bar">
+            <input type="text" placeholder="Scan identification..." />
+          </div>
+
+          <div class="alumni-list">
+            <div class="alumni-card">
+              <div class="alumni-avatar" style="box-shadow: 0 0 15px var(--violet-glow);">RK</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Rajesh Kumar <span
+                    style="font-size: 0.6rem; color: var(--neon-cyan); vertical-align: middle;">[VERIFIED]</span></div>
+                <div class="alumni-role">SDE III @ Google Neural</div>
+                <div class="alumni-meta">CS '15 • Quantum Division</div>
+              </div>
+              <button class="btn-connect"
+                style="background: var(--violet); padding: 6px 12px; border-radius: 10px;">Link</button>
+            </div>
+            <!-- More cards... -->
+          </div>
+        </div>
+        <!-- Same nav as above -->
+      </div>
+
+
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-btn active"><span class="nav-icon">👥</span><span class="nav-label">Directory</span></button>
+        <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+            class="nav-label">Jobs</span></button>
+        <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+            class="nav-label">Settings</span></button>
+      </div>
+    </div>
+
+    <!-- Jobs Screen -->
+    <div class="screen-view" id="jobs" style="display: none;">
+      <div class="mobile-header">
+        <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+        <h2>Job Portal</h2>
+      </div>
+      <div class="mobile-content">
+
+        <button id="post-job-btn"
+          style="display: none; background: var(--primary); color: white; width: 100%; margin-bottom: 15px; padding: 12px; border: none; border-radius: 12px; font-weight: bold; font-size: 0.9rem; margin-top: 5px; cursor: pointer; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.1);"
+          onclick="document.getElementById('post-job-modal').style.display='flex'">
+          + Post a New Job/Internship
+        </button>
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+          <button class="chip active">All</button>
+          <button class="chip">Full-time</button>
+          <button class="chip">Internship</button>
+        </div>
+
+        <!-- Job List -->
+        <div class="job-list">
+          <div class="job-card">
+            <div class="job-header">
+              <div class="job-title">Senior Software Engineer</div>
+              <div class="job-referral">✓ Referral</div>
+            </div>
+            <div class="job-company">Google India</div>
+            <div class="job-meta">
+              <span>📍 Bangalore</span>
+              <span>💰 ₹25-35 LPA</span>
+            </div>
+            <div class="job-posted">Posted by Rajesh Kumar • 2 days ago</div>
+            <button class="btn-apply">Apply Now</button>
+          </div>
+
+          <div class="job-card">
+            <div class="job-header">
+              <div class="job-title">Product Manager</div>
+              <div class="job-referral">✓ Referral</div>
+            </div>
+            <div class="job-company">Microsoft</div>
+            <div class="job-meta">
+              <span>📍 Hyderabad</span>
+              <span>💰 ₹30-40 LPA</span>
+            </div>
+            <div class="job-posted">Posted by Priya Sharma • 5 days ago</div>
+            <button class="btn-apply">Apply Now</button>
+          </div>
+
+          <div class="job-card">
+            <div class="job-header">
+              <div class="job-title">Data Scientist Intern</div>
+            </div>
+            <div class="job-company">Amazon</div>
+            <div class="job-meta">
+              <span>📍 Mumbai</span>
+              <span>💰 ₹50k/month</span>
+            </div>
+            <div class="job-posted">Posted by Sneha Reddy • 1 week ago</div>
+            <button class="btn-apply">Apply Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+            class="nav-label">Directory</span></button>
+        <button class="nav-btn active"><span class="nav-icon">💼</span><span class="nav-label">Jobs</span></button>
+        <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+            class="nav-label">Settings</span></button>
+      </div>
+    </div>
+
+    <!-- Mentorship Screen -->
+    <div class="screen-view" id="mentorship" style="display: none;">
+      <div class="mobile-header">
+        <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+        <h2>Mentorship Hub</h2>
+      </div>
+      <div class="mobile-content">
+        <div class="info-banner">
+          <div class="banner-icon">🤖</div>
+          <div class="banner-content">
+            <div class="banner-title">AI-Powered Matching</div>
+            <div class="banner-text">Get personalized mentor recommendations</div>
+          </div>
+        </div>
+
+
+        <!-- Students Only: My Active Mentors -->
+        <div id="student-mentors-section" style="display: none;">
+          <div class="section-header" style="margin-top: 10px;">
+            <h3 style="color: var(--primary);">👨‍🏫 My Active Mentors</h3>
+          </div>
+          <div class="alumni-list" style="margin-bottom: 20px;">
+            <div class="alumni-card" style="border: 2px solid var(--primary); background: rgba(0, 100, 255, 0.02);">
+              <div class="alumni-avatar" style="background: linear-gradient(135deg, var(--primary), var(--accent));">
+                AD</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Arjun Das</div>
+                <div class="alumni-role">VP Engineering @ StartupInc</div>
+                <div class="alumni-meta" style="color: var(--success); font-weight: bold;">Active Session • 2 hrs left
+                </div>
+              </div>
+              <div style="display: flex; gap: 5px; flex-direction: column;">
+                <button class="btn-connect"
+                  style="background: var(--primary); padding: 5px 10px; font-size: 0.75rem; width: 100%;"
+                  onclick="openMessageModal('Arjun Das')">💬 Message</button>
+                <button class="btn-connect"
+                  style="background: var(--accent); color: black; padding: 5px 10px; font-size: 0.75rem; width: 100%;"
+                  onclick="openMeetingModal('Arjun Das')">📅 Meeting</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section-header">
+            <h3>Discover Mentors</h3>
+          </div>
+        </div>
+
+        <!-- Mentor List -->
+        <div class="mentor-list">
+          <div class="mentor-card">
+            <div class="mentor-avatar">RK</div>
+            <div class="mentor-info">
+              <div class="mentor-name">Rajesh Kumar</div>
+              <div class="mentor-role">Senior SDE @ Google</div>
+              <div class="mentor-expertise">
+                <span class="tag">Career Guidance</span>
+                <span class="tag">System Design</span>
+              </div>
+              <div class="mentor-stats">
+                <span>⭐ 4.9</span>
+                <span>•</span>
+                <span>12 sessions</span>
+                <span>•</span>
+                <span>Available: Weekends</span>
+              </div>
+            </div>
+            <button class="btn-request">Request</button>
+          </div>
+
+          <div class="mentor-card">
+            <div class="mentor-avatar">PS</div>
+            <div class="mentor-info">
+              <div class="mentor-name">Priya Sharma</div>
+              <div class="mentor-role">Product Manager @ Microsoft</div>
+              <div class="mentor-expertise">
+                <span class="tag">Product Strategy</span>
+                <span class="tag">PM Interview</span>
+              </div>
+              <div class="mentor-stats">
+                <span>⭐ 4.8</span>
+                <span>•</span>
+                <span>8 sessions</span>
+                <span>•</span>
+                <span>Available: Evenings</span>
+              </div>
+            </div>
+            <button class="btn-request">Request</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+            class="nav-label">Directory</span></button>
+        <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+            class="nav-label">Jobs</span></button>
+        <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+            class="nav-label">Settings</span></button>
+      </div>
+    </div>
+
+
+    <!-- My Mentees Screen -->
+    <div class="screen-view" id="my-mentees" style="display: none;">
+      <div class="mobile-header">
+        <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+        <h2>My Mentees</h2>
+      </div>
+      <div class="mobile-content">
+        <div class="info-banner" style="background: rgba(46, 204, 113, 0.1); border-color: var(--success);">
+          <div class="banner-icon">🎯</div>
+          <div class="banner-content">
+            <div class="banner-title">Active Engagements</div>
+            <div class="banner-text" style="color: var(--text-muted); font-size: 0.8rem;">You are currently mentoring
+              2 students</div>
+          </div>
+        </div>
+
+        <div class="alumni-list" style="margin-top: 15px;">
+          <div class="alumni-card" style="border-left: 4px solid var(--success);">
+            <div class="alumni-avatar" style="background: var(--success); color: white;">SD</div>
+            <div class="alumni-info">
+              <div class="alumni-name">Sara Davis</div>
+              <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">CS Junior • Class of '26
+              </div>
+              <div class="alumni-meta" style="color: var(--primary); font-size: 0.75rem;">Goal: SDE Interview Prep
+              </div>
+            </div>
+            <div style="display: flex; gap: 5px; flex-direction: column;">
+              <button class="btn-connect"
+                style="background: var(--primary); padding: 5px 10px; font-size: 0.75rem; width: 100%;"
+                onclick="openMessageModal('Sara Davis')">💬 Message</button>
+              <button class="btn-connect"
+                style="background: var(--accent); color: black; padding: 5px 10px; font-size: 0.75rem; width: 100%;"
+                onclick="openMeetingModal('Sara Davis')">📅 Meeting</button>
+            </div>
+          </div>
+
+          <div class="alumni-card" style="border-left: 4px solid var(--success);">
+            <div class="alumni-avatar" style="background: var(--success); color: white;">MP</div>
+            <div class="alumni-info">
+              <div class="alumni-name">Mike Patel</div>
+              <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">EE Senior • Class of '25
+              </div>
+              <div class="alumni-meta" style="color: var(--primary); font-size: 0.75rem;">Goal: Hardware Portfolio
+              </div>
+            </div>
+            <div style="display: flex; gap: 5px; flex-direction: column;">
+              <button class="btn-connect"
+                style="background: var(--primary); padding: 5px 10px; font-size: 0.75rem; width: 100%;"
+                onclick="openMessageModal('Mike Patel')">💬 Message</button>
+              <button class="btn-connect"
+                style="background: var(--accent); color: black; padding: 5px 10px; font-size: 0.75rem; width: 100%;"
+                onclick="openMeetingModal('Mike Patel')">📅 Meeting</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+            class="nav-label">Directory</span></button>
+        <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+            class="nav-label">Jobs</span></button>
+        <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+            class="nav-label">Settings</span></button>
+      </div>
+    </div>
+
+    <!-- Events Screen -->
+    <div class="screen-view" id="events" style="display: none;">
+      <div class="mobile-header">
+        <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+        <h2>Events & Reunions</h2>
+      </div>
+      <div class="mobile-content">
+        <!-- Event List -->
+
+        <div class="event-list">
+          <div class="event-card featured">
+            <div class="event-badge">Featured</div>
+            <div class="event-title">Tech Talk: AI in Industry</div>
+            <div class="event-details">
+              <div class="event-meta">
+                <span>📅 Feb 15, 2026</span>
+                <span>⏰ 6:00 PM</span>
+              </div>
+              <div class="event-meta">
+                <span>📍 Main Auditorium</span>
+                <span>👥 145/200 registered</span>
+              </div>
+            </div>
+            <div class="event-progress">
+              <div class="progress-bar" style="width: 72.5%"></div>
+            </div>
+            <button class="btn-register">Register Now</button>
+          </div>
+
+          <div class="event-card featured">
+            <div class="event-badge">Featured</div>
+            <div class="event-title">Annual Alumni Meet 2026</div>
+            <div class="event-details">
+              <div class="event-meta">
+                <span>📅 Mar 10, 2026</span>
+                <span>⏰ 10:00 AM</span>
+              </div>
+              <div class="event-meta">
+                <span>📍 Campus Grounds</span>
+                <span>👥 890/1000 registered</span>
+              </div>
+            </div>
+            <div class="event-progress">
+              <div class="progress-bar" style="width: 89%"></div>
+            </div>
+            <button class="btn-register">Register Now</button>
+          </div>
+
+          <div class="event-card">
+            <div class="event-title">Career Counseling Workshop</div>
+            <div class="event-details">
+              <div class="event-meta">
+                <span>📅 Mar 22, 2026</span>
+                <span>⏰ 3:00 PM</span>
+              </div>
+              <div class="event-meta">
+                <span>📍 Seminar Hall</span>
+                <span>👥 67/100 registered</span>
+              </div>
+            </div>
+            <button class="btn-register">Register Now</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav">
+        <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+            class="nav-label">Home</span></button>
+        <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+            class="nav-label">Directory</span></button>
+        <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+            class="nav-label">Jobs</span></button>
+        <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+            class="nav-label">Settings</span></button>
+      </div>
+    </div>
+
+    <!-- Donations Screen -->
+    <div class="screen-view" id="donations" style="display: none;">
+      <div class="mobile-header">
+        <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+        <h2>Donations & Giving</h2>
+      </div>
+      <div class="mobile-content">
+        <!-- Admin Only: Donor List & Timeline -->
+        <div id="admin-donors-section" style="display: none; margin-top: 10px;">
+          <div class="section-header">
+            <h3 style="color: var(--primary);">📊 Recent Donations</h3>
+          </div>
+          <div class="alumni-list" style="margin-bottom: 15px;">
+
+            <div class="alumni-card" style="border-left: 4px solid var(--accent); position: relative;">
+              <div class="alumni-avatar"
+                style="background: var(--bg-surface); color: var(--text-main); font-weight: bold; border: 2px solid var(--accent); font-size: 0.75rem;">
+                ₹1L</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Michael Chang</div>
+                <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">Alumni • Class of '10
+                </div>
+                <div class="alumni-meta" style="color: var(--text-main); font-size: 0.75rem; font-weight: 500;">
+                  Scholarship Fund</div>
+              </div>
+              <span
+                style="font-size: 0.7rem; color: var(--text-muted); position: absolute; top: 10px; right: 10px;">Today,
+                10:30 AM</span>
+            </div>
+
+            <div class="alumni-card" style="border-left: 4px solid var(--accent); position: relative;">
+              <div class="alumni-avatar"
+                style="background: var(--bg-surface); color: var(--text-main); font-weight: bold; border: 2px solid var(--accent); font-size: 0.75rem;">
+                ₹50k</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Anita Patel</div>
+                <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">Alumni • Class of '15
+                </div>
+                <div class="alumni-meta" style="color: var(--text-main); font-size: 0.75rem; font-weight: 500;">
+                  General Endowment</div>
+              </div>
+              <span
+                style="font-size: 0.7rem; color: var(--text-muted); position: absolute; top: 10px; right: 10px;">Yesterday</span>
+            </div>
+
+            <div class="alumni-card" style="border-left: 4px solid var(--accent); position: relative;">
+              <div class="alumni-avatar"
+                style="background: var(--bg-surface); color: var(--text-main); font-weight: bold; border: 2px solid var(--accent); font-size: 0.75rem;">
+                ₹10k</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Rajesh Kumar</div>
+                <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">Senior SDE @ Google
+                </div>
+                <div class="alumni-meta" style="color: var(--text-main); font-size: 0.75rem; font-weight: 500;">
+                  Scholarship Fund</div>
+              </div>
+              <span style="font-size: 0.7rem; color: var(--text-muted); position: absolute; top: 10px; right: 10px;">2
+                days ago</span>
+            </div>
+
+            <div class="alumni-card" style="border-left: 4px solid var(--accent); position: relative;">
+              <div class="alumni-avatar"
+                style="background: var(--bg-surface); color: var(--text-main); font-weight: bold; border: 2px solid var(--accent); font-size: 0.75rem;">
+                ₹5L</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Vikram Singh</div>
+                <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">CEO @ TechCorp • Class
+                  of '98</div>
+                <div class="alumni-meta" style="color: var(--text-main); font-size: 0.75rem; font-weight: 500;">
+                  Infrastructure Fund</div>
+              </div>
+              <span style="font-size: 0.7rem; color: var(--text-muted); position: absolute; top: 10px; right: 10px;">3
+                days ago</span>
+            </div>
+
+            <div class="alumni-card" style="border-left: 4px solid var(--accent); position: relative;">
+              <div class="alumni-avatar"
+                style="background: var(--bg-surface); color: var(--text-main); font-weight: bold; border: 2px solid var(--accent); font-size: 0.75rem;">
+                ₹25k</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Priya Sharma</div>
+                <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">Product Manager @
+                  Microsoft</div>
+                <div class="alumni-meta" style="color: var(--text-main); font-size: 0.75rem; font-weight: 500;">
+                  General Endowment</div>
+              </div>
+              <span style="font-size: 0.7rem; color: var(--text-muted); position: absolute; top: 10px; right: 10px;">4
+                days ago</span>
+            </div>
+
+            <div class="alumni-card" style="border-left: 4px solid var(--accent); position: relative;">
+              <div class="alumni-avatar"
+                style="background: var(--bg-surface); color: var(--text-main); font-weight: bold; border: 2px solid var(--accent); font-size: 0.75rem;">
+                ₹2L</div>
+              <div class="alumni-info">
+                <div class="alumni-name">Sneha Reddy</div>
+                <div class="alumni-role" style="font-size: 0.8rem; color: var(--text-muted);">Data Scientist @ Amazon
+                </div>
+                <div class="alumni-meta" style="color: var(--text-main); font-size: 0.75rem; font-weight: 500;">
+                  Scholarship Fund</div>
+              </div>
+              <span style="font-size: 0.7rem; color: var(--text-muted); position: absolute; top: 10px; right: 10px;">5
+                days ago</span>
+            </div>
+
+          </div>
+          <div
+            style="background: var(--bg-subtle); border-radius: 8px; padding: 10px 14px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; border: 1px solid var(--border-light);">
+            💰 <strong>Total Collected:</strong> ₹8.9L this week &nbsp;|&nbsp; 6 donors
+          </div>
+        </div>
+
+        <div class="info-banner"
+          style="background: linear-gradient(135deg, #fef08a 0%, #fef9c3 100%); border-color: var(--accent);">
+          <div class="info-banner"
+            style="background: linear-gradient(135deg, #fef08a 0%, #fef9c3 100%); border-color: var(--accent);">
+            <div class="banner-icon">❤️</div>
+            <div class="banner-content">
+              <div class="banner-title">Total Raised: ₹2.5Cr</div>
+              <div class="banner-text">Help us reach our ₹5Cr goal</div>
+            </div>
+          </div>
+
+          <div class="event-list">
+            <div class="event-card">
+              <div class="event-title">Scholarship Fund</div>
+              <div class="event-details text-muted" style="font-size:0.875rem;">Support underprivileged students.
+              </div>
+              <div class="event-progress">
+                <div class="progress-bar" style="width: 65%; background: var(--accent);"></div>
+              </div>
+              <button
+                style="background: var(--accent); color: #000; padding:10px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;"
+                onclick="handleDonation(this, 'Scholarship Fund')">Donate Now</button>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+              class="nav-label">Home</span></button>
+          <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+              class="nav-label">Directory</span></button>
+          <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+              class="nav-label">Jobs</span></button>
+          <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+              class="nav-label">Profile</span></button>
+        </div>
+      </div>
+
+      <!-- Admin Screen -->
+      <div class="screen-view" id="admin" style="display: none;">
+        <div class="mobile-header">
+          <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+          <h2>Admin Dashboard</h2>
+        </div>
+        <div class="mobile-content">
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-value">23</div>
+              <div class="stat-label">Pending Approvals</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">12K+</div>
+              <div class="stat-label">Total Alumni</div>
+            </div>
+          </div>
+          <div class="section-header">
+            <h3>Recent Approvals Needed</h3>
+          </div>
+          <div class="alumni-list">
+            <div class="alumni-card">
+              <div class="alumni-avatar">JD</div>
+              <div class="alumni-info">
+                <div class="alumni-name">John Doe</div>
+                <div class="alumni-meta">Requires verification</div>
+              </div>
+              <button class="btn-connect" style="background: var(--success);"
+                onclick="alert('Approved')">Approve</button>
+            </div>
+          </div>
+        </div>
+        <div class="bottom-nav">
+          <button class="nav-btn active" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+              class="nav-label">Home</span></button>
+          <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+              class="nav-label">Directory</span></button>
+          <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+              class="nav-label">Jobs</span></button>
+          <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+              class="nav-label">Settings</span></button>
+        </div>
+      </div>
+
+      <!-- Profile Screen -->
+      <div class="screen-view" id="profile" style="display: none;">
+        <div class="mobile-header">
+          <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+          <h2>My Profile</h2>
+        </div>
+        <div class="mobile-content">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div class="alumni-avatar" style="width: 100px; height: 100px; margin: 0 auto 1rem auto; font-size: 2.5rem;"
+              id="profile-avatar">JA
+            </div>
+            <h2 id="profile-name">John Alumnus</h2>
+            <p class="text-muted" id="profile-role">Alumni</p>
+          </div>
+
+          <div class="section-header" style="margin-top: -10px;">
+            <h3>Basic Details</h3>
+          </div>
+          <div class="input-group">
+            <label>Full Name</label>
+            <input type="text" value="John Alumnus">
+          </div>
+          <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" value="alumni@edu.in">
+          </div>
+          <div class="input-group">
+            <label>Mobile Number</label>
+            <input type="tel" value="+91 98765 43210">
+          </div>
+          <div class="input-group">
+            <label>Batch & Department</label>
+            <input type="text" value="2018 - Computer Science" disabled style="background: var(--bg-subtle);">
+          </div>
+
+          <div class="section-header" style="margin-top: 1.5rem;">
+            <h3>Professional</h3>
+          </div>
+          <div class="input-group">
+            <label>Current Company</label>
+            <input type="text" value="Tech Corp">
+          </div>
+          <div class="input-group">
+            <label>LinkedIn URL</label>
+            <input type="url" value="https://linkedin.com/in/johnalumnus">
+          </div>
+
+          <div class="section-header" style="margin-top: 1.5rem;">
+            <h3>App Settings</h3>
+          </div>
+          <div
+            style="background: var(--bg-surface); padding: 15px; border-radius: var(--radius); margin-bottom: 1.5rem; border: 1px solid var(--border-light); font-size: 0.9rem;">
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--bg-subtle); padding-bottom: 8px;">
+              <span><strong>Push Notifications</strong><br><span class="text-muted" style="font-size: 0.75rem;">Get
+                  alerted for messages</span></span>
+              <input type="checkbox" checked style="width: 20px; height: 20px; accent-color: var(--primary);">
+            </div>
+            <div
+              style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--bg-subtle); padding-bottom: 8px;">
+              <span><strong>Email Digest</strong><br><span class="text-muted" style="font-size: 0.75rem;">Weekly
+                  networking recap</span></span>
+              <input type="checkbox" checked style="width: 20px; height: 20px; accent-color: var(--primary);">
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span><strong>Profile Visibility</strong><br><span class="text-muted" style="font-size: 0.75rem;">Who
+                  can
+                  search for you</span></span>
+              <select style="padding: 5px; border: 1px solid var(--border-light); border-radius: 5px; outline: none;">
+                <option>Public</option>
+                <option>Alumni Only</option>
+                <option>Hidden</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="btn-primary" onclick="alert('Profile Saved')">Save Profile</button>
+          <button class="btn-primary" style="background: var(--danger); margin-top: 1rem;"
+            onclick="logoutUser()">Logout</button>
+        </div>
+        <div class="bottom-nav">
+          <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+              class="nav-label">Home</span></button>
+          <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+              class="nav-label">Directory</span></button>
+          <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+              class="nav-label">Jobs</span></button>
+          <button class="nav-btn active" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+              class="nav-label">Profile</span></button>
+        </div>
+      </div>
+
+      <!-- Notifications Screen -->
+      <div class="screen-view" id="notifications" style="display: none;">
+        <div class="mobile-header">
+          <button class="back-btn" onclick="showScreen('dashboard')">←</button>
+          <h2 id="notif-header-title">Notifications</h2>
+        </div>
+        <div class="mobile-content" id="notif-content">
+          <!-- Dynamically populated based on role -->
+        </div>
+        <div class="bottom-nav">
+          <button class="nav-btn" onclick="showScreen('dashboard')"><span class="nav-icon">🏠</span><span
+              class="nav-label">Home</span></button>
+          <button class="nav-btn" onclick="showScreen('directory')"><span class="nav-icon">👥</span><span
+              class="nav-label">Directory</span></button>
+          <button class="nav-btn" onclick="showScreen('jobs')"><span class="nav-icon">💼</span><span
+              class="nav-label">Jobs</span></button>
+          <button class="nav-btn" onclick="showScreen('profile')"><span class="nav-icon">⚙️</span><span
+              class="nav-label">Profile</span></button>
+        </div>
+      </div>
+
+
+      <!-- Setup Donation Modal -->
+      <div id="donate-modal"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center;">
+        <div
+          style="background: white; width: 85%; padding: 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+            <h3 style="margin: 0; color: var(--text-main);">Make a Donation</h3>
+            <button onclick="document.getElementById('donate-modal').style.display='none'"
+              style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--danger);">✕</button>
+          </div>
+
+          <div class="input-group" style="margin-bottom: 15px;">
+            <label
+              style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Donation
+              Category</label>
+            <select id="donate-category"
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+              <option value="Scholarship Fund">🎓 Scholarship Fund</option>
+              <option value="Campus Development">🏢 Campus Development</option>
+              <option value="Research & Innovation">🔬 Research & Innovation</option>
+              <option value="General Support">❤️ General Support</option>
+            </select>
+          </div>
+
+          <div class="input-group" style="margin-bottom: 15px;">
+            <label
+              style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Amount
+              (₹)</label>
+            <input type="number" id="donate-amount" placeholder="e.g. 5000"
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+
+            <div style="display: flex; gap: 10px; margin-top: 10px;">
+              <button
+                style="flex: 1; padding: 5px; background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 5px; cursor: pointer; font-family: inherit; font-size: 0.8rem;"
+                onclick="document.getElementById('donate-amount').value = 1000">₹1,000</button>
+              <button
+                style="flex: 1; padding: 5px; background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 5px; cursor: pointer; font-family: inherit; font-size: 0.8rem;"
+                onclick="document.getElementById('donate-amount').value = 5000">₹5,000</button>
+              <button
+                style="flex: 1; padding: 5px; background: var(--bg-subtle); border: 1px solid var(--border-light); border-radius: 5px; cursor: pointer; font-family: inherit; font-size: 0.8rem;"
+                onclick="document.getElementById('donate-amount').value = 10000">₹10,000</button>
+            </div>
+          </div>
+
+          <button onclick="processDonation()"
+            style="background: var(--accent); color: #000; padding:12px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Proceed
+            to Donate</button>
+          <div
+            style="background: rgba(0, 100, 255, 0.05); border: 1px dashed rgba(0, 100, 255, 0.3); border-radius: 8px; padding: 10px; margin-top: 15px; font-size: 0.75rem; text-align: center; color: var(--text-muted); display: flex; align-items: center; justify-content: center; gap: 15px;">
+            <img
+              src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=upi://pay?pa=demo@upi&pn=Alumni%20Connect%20Demo"
+              alt="Demo QR"
+              style="border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 80px; height: 80px;">
+            <div style="text-align: left;">
+              <strong style="color: var(--primary);">📲 Scan to Pay (Mock)</strong><br>
+              UPI: <code>test@upi</code><br>
+              Card: <code>4111 .... 1111</code><br>
+              <span style="font-size: 0.65rem; font-style: italic;">Scan with any app for demo</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+
+      <!-- General Info Modal for Job/Event Details -->
+      <div id="info-modal"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center;">
+        <div
+          style="background: white; width: 85%; padding: 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+            <div style="flex: 1; padding-right: 15px;">
+              <h3 id="info-title" style="margin: 0; color: var(--text-main); font-size: 1.1rem; line-height: 1.3;">
+                Details</h3>
+              <div id="info-subtitle" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 5px;"></div>
+            </div>
+            <button onclick="document.getElementById('info-modal').style.display='none'"
+              style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--danger);">✕</button>
+          </div>
+
+          <div id="info-description"
+            style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; background: var(--bg-surface); padding: 12px; border-radius: 8px; border: 1px dashed var(--border-light);">
+            Description goes here...
+          </div>
+
+          <button id="info-confirm-btn" class="btn-primary" style="width: 100%;">Confirm</button>
+        </div>
+      </div>
+
+
+      <!-- Setup Meeting Modal -->
+      <div id="meeting-modal"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center;">
+        <div
+          style="background: white; width: 85%; padding: 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+            <h3 style="margin: 0; color: var(--text-main);">📅 Schedule Meeting</h3>
+            <button onclick="document.getElementById('meeting-modal').style.display='none'"
+              style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--danger);">✕</button>
+          </div>
+
+          <p id="meeting-mentee-name"
+            style="font-size: 0.9rem; margin-bottom: 15px; font-weight: bold; color: var(--primary);"></p>
+
+          <div class="input-group" style="margin-bottom: 15px;">
+            <label
+              style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Topic
+              / Agenda</label>
+            <input type="text" id="meeting-topic" placeholder="e.g. Mock Interview"
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+          </div>
+
+          <div class="input-group" style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <div style="flex: 1;">
+              <label
+                style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Date</label>
+              <input type="date" id="meeting-date"
+                style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+            </div>
+            <div style="flex: 1;">
+              <label
+                style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Time</label>
+              <input type="time" id="meeting-time"
+                style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+            </div>
+          </div>
+
+          <div class="input-group" style="margin-bottom: 20px;">
+            <label
+              style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Meeting
+              Link (Zoom/Meet)</label>
+            <input type="url" id="meeting-link" placeholder="https://meet.google.com/..."
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+          </div>
+
+          <button onclick="confirmMeeting()"
+            style="background: var(--primary); color: white; padding:12px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Send
+            Invite</button>
+        </div>
+      </div>
+
+      <!-- In-App Messaging Modal -->
+      <div id="message-modal"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center;">
+        <div
+          style="background: white; width: 85%; padding: 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+            <h3 style="margin: 0; color: var(--text-main);">💬 Send Message</h3>
+            <button onclick="document.getElementById('message-modal').style.display='none'"
+              style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--danger);">✕</button>
+          </div>
+
+          <p id="msg-mentee-name"
+            style="font-size: 0.9rem; margin-bottom: 10px; font-weight: bold; color: var(--primary);"></p>
+
+
+          <label
+            style="font-size: 0.75rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block; text-align: left;">Quick
+            Reply Templates:</label>
+          <div style="display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 15px; justify-content: flex-start;">
+            <button onclick="setMsgOption('Are we still on for our mentoring session?')"
+              style="padding: 5px 10px; background: var(--bg-surface); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 12px; font-size: 0.75rem; cursor: pointer;">📅
+              Meeting Check</button>
+            <button onclick="setMsgOption('Could you please review the attached document?')"
+              style="padding: 5px 10px; background: var(--bg-surface); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 12px; font-size: 0.75rem; cursor: pointer;">📄
+              Review Work</button>
+            <button onclick="setMsgOption('Just checking in on your job hunt progress!')"
+              style="padding: 5px 10px; background: var(--bg-surface); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 12px; font-size: 0.75rem; cursor: pointer;">👋
+              Progress Check</button>
+            <button onclick="setMsgOption('Here is a referral link that might help you.')"
+              style="padding: 5px 10px; background: var(--bg-surface); border: 1px solid var(--border-light); color: var(--text-main); border-radius: 12px; font-size: 0.75rem; cursor: pointer;">🔗
+              Referral Link</button>
+          </div>
+          <textarea id="msg-content" rows="4" placeholder="Type your message here..."
+            style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit; margin-bottom: 15px; resize: none;"></textarea>
+
+          <button onclick="confirmMessage()"
+            style="background: var(--primary); color: white; padding:12px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Send
+            Message</button>
+        </div>
+      </div>
+
+
+      <!-- Post a Job Modal -->
+      <div id="post-job-modal"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center;">
+        <div
+          style="background: white; width: 85%; padding: 20px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+
+          <div
+            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 10px;">
+            <h3 style="margin: 0; color: var(--text-main);">📝 Post a Job/Internship</h3>
+            <button onclick="document.getElementById('post-job-modal').style.display='none'"
+              style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--danger);">✕</button>
+          </div>
+
+          <div class="input-group" style="margin-bottom: 15px;">
+            <label
+              style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Job
+              Title</label>
+            <input type="text" id="post-job-title" placeholder="e.g. Software Engineer"
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+          </div>
+
+          <div class="input-group" style="margin-bottom: 15px;">
+            <label
+              style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Company
+              Name</label>
+            <input type="text" id="post-job-company" placeholder="e.g. Microsoft"
+              style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+          </div>
+
+          <div class="input-group" style="display: flex; gap: 10px; margin-bottom: 15px;">
+            <div style="flex: 1;">
+              <label
+                style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Location</label>
+              <input type="text" id="post-job-location" placeholder="e.g. Remote"
+                style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+            </div>
+            <div style="flex: 1;">
+              <label
+                style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 5px; display: block;">Salary/Stipend</label>
+              <input type="text" id="post-job-salary" placeholder="e.g. ₹20 LPA"
+                style="width: 100%; padding: 10px; border: 1px solid var(--border-light); border-radius: 8px; outline: none; background: var(--bg-surface); font-family: inherit;">
+            </div>
+          </div>
+
+          <div class="input-group" style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <input type="checkbox" id="post-job-referral"
+              style="accent-color: var(--primary); width: 16px; height: 16px;">
+            <label for="post-job-referral" style="font-size: 0.8rem; font-weight: 600; color: var(--text-main);">I can
+              provide a referral for this role</label>
+          </div>
+
+          <button onclick="submitNewJob()"
+            style="background: var(--primary); color: white; padding:12px; width:100%; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">Post
+            Job</button>
+        </div>
+      </div>
+
+      <!-- Custom Modal Popup -->
+      <div id="action-modal"
+        style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 2000; justify-content: center; align-items: center;">
+        <div
+          style="background: white; width: 85%; padding: 20px; border-radius: 20px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+          <div id="modal-icon" style="font-size: 3rem; margin-bottom: 15px;">✅</div>
+          <h3 id="modal-title" style="margin-bottom: 10px; color: var(--text-main);">Success!</h3>
+          <p id="modal-desc"
+            style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 20px; line-height: 1.4;">Your request
+            has
+            been processed.</p>
+          <button onclick="document.getElementById('action-modal').style.display='none'" class="btn-primary"
+            style="width: 100%;">Awesome!</button>
+        </div>
+      </div>
+
+      <!-- Registrations List Modal (Admin Only) -->
+      <div class="activity-item" style="margin: 0;">
+        <div class="activity-icon"
+          style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; font-weight: bold; font-size: 0.9rem;">
+          PS</div>
+        <div class="activity-content">
+          <div class="activity-text" style="font-weight: 600;">Priya Sharma</div>
+          <div class="activity-time">EE '17 • Registered 1d ago</div>
+        </div>
+      </div>
+      <div class="activity-item" style="margin: 0;">
+        <div class="activity-icon"
+          style="background: linear-gradient(135deg, var(--primary), var(--accent)); color: white; font-weight: bold; font-size: 0.9rem;">
+          RK</div>
+        <div class="activity-content">
+          <div class="activity-text" style="font-weight: 600;">Rajesh Kumar</div>
+          <div class="activity-time">CS '15 • Registered 2d ago</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="margin-top: 15px; padding: 10px;" onclick="alert('Exporting to Excel...')">Export
+      Data</button>
+  </div>
+  </div>
+
+
+
+  </div>
+  </div>
+
+  <!-- Chatbot UI (outside phone screen to avoid overflow:hidden clipping) -->
+  <div id="chatbot-container"
+    style="display: none; position: absolute; bottom: 130px; right: -10px; width: 290px; height: 420px; background: rgba(255,255,255,0.97); backdrop-filter: blur(12px); border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.25); z-index: 2000; flex-direction: column; overflow: hidden; border: 1px solid rgba(200,220,255,0.7);">
+    <div
+      style="background: linear-gradient(135deg, var(--primary), #0055ff); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-radius: 20px 20px 0 0;">
+      <span>🤖 Alumni Assistant</span>
+      <button onclick="toggleChatbot()"
+        style="background: none; border: none; color: white; font-size: 1.2rem; cursor: pointer;">✕</button>
+    </div>
+    <div id="chat-messages"
+      style="flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 0.85rem;">
+      <div
+        style="background: var(--bg-subtle); color: var(--text-main); padding: 10px; border-radius: 10px; border-bottom-left-radius: 0; align-self: flex-start; max-width: 85%;">
+        Hi! I'm your Alumni AI assistant. Ask me about jobs, mentors, events, or anything else! 😊
+      </div>
+    </div>
+    <div
+      style="padding: 10px; border-top: 1px solid var(--border-light); display: flex; gap: 5px; background: white; border-radius: 0 0 20px 20px;">
+      <input type="text" id="chat-input" placeholder="Ask me anything..."
+        style="flex: 1; padding: 8px 12px; border: 1px solid var(--border-light); border-radius: 20px; outline: none; font-family: inherit; font-size: 0.85rem;">
+      <button onclick="sendMessage()"
+        style="background: var(--primary); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: flex; justify-content: center; align-items: center;">➤</button>
+    </div>
+  </div>
+
+  <!-- Floating Chat Button (outside phone-screen so it's always visible) -->
+  <button id="chatbot-toggle-btn" onclick="toggleChatbot()"
+    style="position: absolute; bottom: 60px; right: -5px; width: 56px; height: 56px; background: linear-gradient(135deg, var(--primary), #0055ff); color: white; border: none; border-radius: 50%; font-size: 1.6rem; display: flex; justify-content: center; align-items: center; cursor: pointer; box-shadow: 0 5px 25px rgba(0,51,102,0.5); z-index: 2000; transition: transform 0.3s; animation: chatPulse 2.5s infinite;">
+    🤖
+  </button>
+
+  <script src="mobile-app.js"></script>
+
+  <!-- Admin: View Applicants / Registrations Modal (outside phone-screen to avoid clipping) -->
+  <div id="admin-registrations-modal"
+    style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 3000; justify-content: center; align-items: center;">
+    <div
+      style="background: white; width: 88%; max-height: 78%; padding: 20px; border-radius: 20px; box-shadow: 0 10px 50px rgba(0,0,0,0.3); display: flex; flex-direction: column;">
+
+      <div
+        style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; margin-bottom: 15px;">
+        <h3 id="reg-event-title"
+          style="margin: 0; color: var(--primary); font-size: 1rem; max-width: 80%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          Applicants</h3>
+        <button onclick="document.getElementById('admin-registrations-modal').style.display='none'"
+          style="background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--danger);">✕</button>
+      </div>
+
+      <div id="admin-modal-body" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;">
+      </div>
+
+      <button class="btn-primary" style="margin-top: 15px; padding: 10px;"
+        onclick="alert('Exporting to Excel/CSV...')">📥 Export Data</button>
+    </div>
+  </div>
+
+</body>
+
+</html>
